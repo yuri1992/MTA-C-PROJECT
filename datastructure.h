@@ -1,0 +1,8 @@
+//
+// Created by yurir on 5/20/16.
+//
+
+#ifndef MTA_C_PROJECT_DATASTRUCTURE_H
+#define MTA_C_PROJECT_DATASTRUCTURE_H
+
+#endif //MTA_C_PROJECT_DATASTRUCTURE_H
