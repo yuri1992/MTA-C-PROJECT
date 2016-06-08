@@ -15,4 +15,4 @@
 11 error path /usr/share/npm/lib/utils/completion.sh
 12 error code ENOENT
 13 error errno 34
-14 verbose exit [ 34, true ]
+14 verbose exitHandler [ 34, true ]

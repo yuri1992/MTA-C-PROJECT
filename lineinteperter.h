@@ -7,10 +7,10 @@
 
 #include <string.h>
 #include <stdio.h>
+#include "apartment.h"
+#include "utils.h"
 
-typedef int BOOL;
-#define FALSE 0
-#define TRUE 1
+#define INPUT_MAX 256
 
 typedef struct list_node {
     char *data;
@@ -29,29 +29,54 @@ typedef struct key_value {
 
 typedef struct command {
     char *command;
-    List* args;
-    Dict* kwargs;
+    List *args;
+    Dict *kwargs;
     int size;
 } COMMAND;
 
-COMMAND * commandLineInterperter(char *str);
-List * extractArgs(char *args);
+
+ApartmentTable* initialProgramState();
+
+void routerHandler(COMMAND *currCommand, ApartmentTable* db);
+
+void start(ApartmentTable* db);
+
+void exitHandler(ApartmentTable* db);
+
+COMMAND *commandLineInterperter(char *str);
+
+List *extractArgs(char *args);
+
+Dict *extractKwargs(char *str, int *size);
+
+char *splitFirst(const char *str, char needle);
+
+
 void debugCommand(COMMAND);
 
+
 /* Dict utils functions */
-char* getValueByKey(char* key, Dict* dict);
-BOOL isKeyExists(char* key, Dict* dict);
+char *getValueByKey(char *key, Dict *dict);
+
+BOOL isKeyExists(char *key, Dict *dict);
+
 void printDict(Dict *pValue, int size);
 
 /* List utils functions */
-
 void makeEmptyList(List *pList);
-void insertDataToEndList(List *pList, char* str);
-void insertNodeToEndList(List *pList,ListNode *newNode);
+
+void insertDataToEndList(List *pList, char *str);
+
+void insertNodeToEndList(List *pList, ListNode *newNode);
+
 void freeList(List *pList);
+
 void printList(List *pList);
+
 BOOL isEmptyList(List *lst);
-ListNode *createNodeElement(char* str, ListNode *next);
+
+ListNode *createNodeElement(char *str, ListNode *next);
+
 void swapNodes(ListNode *pNode, ListNode *pNode2);
 
 #endif //MTA_C_PROJECT_LINEINTEPERTER_H

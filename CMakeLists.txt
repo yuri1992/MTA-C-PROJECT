@@ -10,6 +10,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wextra -Wall -pedantic -Wvla -std=c99")
 #set(SOURCE_FILES datastructure.c)
 #set(SOURCE_FILES datastructure.h)
 
-file(GLOB files "*.h" "*.c" "utils/*.h" "utils/*.c")
+file(GLOB files "*.h" "*.c")
 
 add_executable(MTA-C-PROJECT ${files} ${SOURCE_FILES} main.c)
