@@ -9,32 +9,35 @@
 void find_apt(COMMAND cmd, ApartmentTable db) {
     /*
      * find_apt
-     * Printing the apartments that matched the cmd.kwargs filter
+     * Printing the apartments that matched the cmd->kwargs filter
      */
 
-    // Todo: pre check if -sr or -r included in kwargs and sort the array currectly
+    // Todo: pre check if -sr or -r included in kwargs and sort the array currently
 
     for (int i = 0; i < db.size; i++) {
         Apartment tmp = db.arr[i];
-
+        char *pt;
         // if apartment not match the filter, we continue to the next
 
-        int price = atoi(getValueByKey("MaxPrice", cmd.kwargs));
+        pt = getValueByKey("MaxPrice", cmd.kwargs);
+        int price = (int) (pt ? atoi(pt) : NULL);
         if (price && tmp.price > price)
             continue;
 
-        int rooms = atoi(getValueByKey("MinNumRooms", cmd.kwargs));
+        pt = getValueByKey("MinNumRooms", cmd.kwargs);
+        int rooms = (int) (pt ? atoi(pt) : NULL);
         if (rooms && tmp.rooms < rooms)
             continue;
 
-        rooms = atoi(getValueByKey("MaxNumRooms", cmd.kwargs));
+        pt = getValueByKey("MaxNumRooms", cmd.kwargs);
+        rooms = (int) (pt ? atoi(pt) : NULL);
         if (rooms && tmp.rooms > rooms)
             continue;
 
-        int date = atoi(getValueByKey("Date", cmd.kwargs));
-        // Todo: implement an ctime convert to seconds and compare
-        if (rooms && tmp.entryDate > date)
-            continue;
+//        int date = atoi(getValueByKey("Date", cmd.kwargs));
+//        // Todo: implement an ctime convert to seconds and compare
+//        if (rooms && tmp.entryDate > date)
+//            continue;
 
         printApartment(tmp);
     }

@@ -25,13 +25,17 @@ typedef struct list {
 typedef struct key_value {
     char *key;
     char *value;
+} KeyValue;
+
+typedef struct dict {
+    KeyValue *arr;
+    int size;
 } Dict;
 
 typedef struct command {
     char *command;
     List *args;
     Dict *kwargs;
-    int size;
 } COMMAND;
 
 
@@ -47,20 +51,18 @@ COMMAND *commandLineInterperter(char *str);
 
 List *extractArgs(char *args);
 
-Dict *extractKwargs(char *str, int *size);
+Dict * extractKwargs(char *str);
 
 char *splitFirst(const char *str, char needle);
 
-
 void debugCommand(COMMAND);
-
 
 /* Dict utils functions */
 char *getValueByKey(char *key, Dict *dict);
 
 BOOL isKeyExists(char *key, Dict *dict);
 
-void printDict(Dict *pValue, int size);
+void printDict(Dict *pValue);
 
 /* List utils functions */
 void makeEmptyList(List *pList);

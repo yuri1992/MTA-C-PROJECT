@@ -2,8 +2,9 @@
 #include <string.h>
 #include "lineinteperter.h"
 #include "find-apt.h"
+#include "add-apt.h"
 
-void start(ApartmentTable* db) {
+void start(ApartmentTable *db) {
     /*
      * waiting for input program, kind of router function
      */
@@ -11,16 +12,17 @@ void start(ApartmentTable* db) {
     char line[INPUT_MAX];
     COMMAND *currCommand = NULL;
 
-    printf("Welcome to your Apartments DB manager, Please Provide your command! \n");
-    printf("(hint: exit (for exit), help (to see all avaliable commands)\n");
+    printf("Please enter one of the following commands: \n");
+    printf("add-apt, find-apt, buy-apt or delete-apt\n");
+    printf("For reconstruction commands, please enter:\n");
+    printf("!!, !num, history, short_history or !num^str1^str2\n");
 
     while (isEOF == FALSE) {
         gets(line);
         if (line[0] != '\0') {
             if (strcmp(line, "exit") == 0) {
-                printf("Saving all data to disk.... please wait... \n");
                 exitHandler(db);
-                printf("Good bye, All the data been saved and waiting for you...");
+                printf("Good Bye!");
                 break;
             } else {
                 currCommand = commandLineInterperter(line);
@@ -28,15 +30,22 @@ void start(ApartmentTable* db) {
                 routerHandler(currCommand, db);
             }
         }
-        printf("Completed! What you want to do next ?");
     }
 
 }
 
-void routerHandler(COMMAND* currCommand, ApartmentTable* db) {
+void routerHandler(COMMAND *currCommand, ApartmentTable *db) {
     if (strcmp(currCommand->command, "find-apt") == 0) {
         find_apt(*currCommand, *db);
-    } else {
+    } else if (strcmp(currCommand->command, "buy-apt") == 0) {
+
+    } else if (strcmp(currCommand->command, "delete-apt") == 0) {
+
+    } else if (strcmp(currCommand->command, "add-apt") == 0) {
+        add_apt(*currCommand, db);
+    } else if (strcmp(currCommand->command, "history") == 0) {
+
+    } else if (strcmp(currCommand->command, "short_history") == 0) {
 
     }
 }
@@ -49,18 +58,18 @@ void exitHandler(ApartmentTable *table) {
 
 }
 
-ApartmentTable* initialProgramState() {
+ApartmentTable *initialProgramState() {
     /*
      * initializer for the all project, suppose to initial all data structures and
      * load pre-saved data
      */
 
     // !!!!! only for now i initial the table with "dump" data for tests and debug
-    ApartmentTable *table =NULL;
+    ApartmentTable *table = NULL;
     table = malloc(sizeof(ApartmentTable));
-    table->arr = malloc(sizeof(Apartment) * 20);
+    table->arr = malloc(sizeof(Apartment) * 5);
     table->size = 5;
-    
+
     table->arr[0].id = 1;
     table->arr[0].price = 1000000;
     table->arr[0].rooms = 4;
@@ -76,7 +85,7 @@ ApartmentTable* initialProgramState() {
     table->arr[2].id = 3;
     table->arr[2].price = 100000;
     table->arr[2].rooms = 1;
-    table->arr[2].address = strdup("Steet 12, City, Israel");
+    table->arr[2].address = strdup("Steet 12, Cidfgdgty, Israel");
     table->arr[2].entryDate = (short) 123213212;
 
     table->arr[3].id = 4;
@@ -91,55 +100,66 @@ ApartmentTable* initialProgramState() {
     table->arr[4].address = strdup("Steet 12, City, Israel");
     table->arr[4].entryDate = (short) 123213212;
 
-
+    return table;
     // Todo: initial all pre saved data stores like commands, apartments, etc ..
 }
 
-COMMAND* commandLineInterperter(char *str) {
-    COMMAND * cmd = malloc(sizeof(Dict));
-    char *args, *command_name;
+COMMAND *commandLineInterperter(char *str) {
+    COMMAND *cmd = malloc(sizeof(Dict));
+    char *args = NULL, *command_name = NULL;
 
     // parsing command name
     command_name = strtok(str, " ");
     cmd->command = strdup(command_name);
-    cmd->size = 0;
+    cmd->kwargs = NULL;
 
     /*
      * There only option to have args or extractKwargs (key value arg)
      */
     // lets try to get args
     args = str + strlen(command_name) + 1;
-    if (args[0] != '-') {
+    if (args[0] != '-' && args[0] != '–') {
         cmd->args = extractArgs(args);
     } else {
-        cmd->kwargs = extractKwargs(args, &cmd->size);
+        cmd->kwargs = extractKwargs(args);
     }
 
     return cmd;
 }
 
-Dict *extractKwargs(char *str, int *size) {
-    int pySize = 2;
+Dict* extractKwargs(char *str) {
+    int pySize = 2, size = 0;
+    KeyValue *arr;
+    Dict* pt = malloc(sizeof(Dict) * 1);
 
-    Dict *dict;
-    dict = malloc(sizeof(Dict) * 2);
+    arr = malloc(sizeof(KeyValue) * 2);
     str = strtok(str, "-");
 
     while (str != NULL) {
-        if (*size == pySize) {
+        if (size == pySize) {
             pySize *= 2;
-            dict = realloc(dict, sizeof(Dict) * pySize);
+            arr = realloc(arr, sizeof(Dict) * pySize);
         }
-        dict[*size].key = splitFirst(str, ' ');
-        dict[*size].value = strdup(str + strlen(dict[*size].key));
+        arr[size].key = splitFirst(str, ' ');
+        if (arr[size].key == NULL) {
+            arr[size].key = strdup(str);
+        } else {
+            if (strlen(str) > strlen(arr[size].key)) {
+                arr[size].value = strdup(str + strlen(arr[size].key));
+            } else {
+                arr[size].value = NULL;
+            }
+        }
         str = strtok(NULL, "-");
-        (*size)++;
+        size++;
     }
 
-    return dict;
+    pt->size = size;
+    pt->arr = arr;
+    return pt;
 }
 
-char* splitFirst(const char* str, char needle) {
+char *splitFirst(const char *str, char needle) {
     /*
      * return char* str that wall allocated till first occur of char,
      * return NULL if not found
@@ -156,8 +176,8 @@ char* splitFirst(const char* str, char needle) {
     return strOut;
 }
 
-List* extractArgs(char *args) {
-    List* pList = malloc(sizeof(List));
+List *extractArgs(char *args) {
+    List *pList = malloc(sizeof(List));
     char *tmp, *last;
 
     makeEmptyList(pList);
@@ -166,6 +186,7 @@ List* extractArgs(char *args) {
         if (args[0] == '"') {
             args++;
             tmp = splitFirst(args, '"');
+            args++;
         } else {
             tmp = splitFirst(args, ' ');
             if (tmp == NULL) {
@@ -175,7 +196,7 @@ List* extractArgs(char *args) {
         }
         insertDataToEndList(pList, tmp);
         if (args != NULL)
-            args += strlen(tmp) + 2;
+            args += strlen(tmp) + 1;
     }
     return pList;
 }
@@ -191,31 +212,39 @@ void debugCommand(COMMAND command1) {
         printList(command1.args);
     }
 
-    if (command1.size == 0) {
+    if (command1.kwargs == NULL) {
         printf("command dont have kwargs values \n");
     } else {
         printf("command have kwargs values \n");
-        printDict(command1.kwargs, command1.size);
+        printDict(command1.kwargs);
     }
     printf("\n \n");
 
 }
 
-void printDict(Dict *pValue, int size) {
-    for(int i=0;i<size;i++) {
-        printf("Key : %s \n", pValue[i].key);
-        printf("Value : %s \n", pValue[i].value);
+void printDict(Dict* kwargs) {
+    for (int i = 0; i < kwargs->size; i++) {
+        printf("Key : %s \n", kwargs->arr[i].key);
+        printf("Value : %s \n", kwargs->arr[i].value);
     }
 
 }
 
-char *getValueByKey(char *key, Dict *dict) {
-    // Todo: implement get by key
+char *getValueByKey(char *key, Dict *kwargs) {
+    for (int i=0;i< kwargs->size;i++) {
+        if (strcmp(kwargs->arr[i].key, key) == 0) {
+            return kwargs->arr[i].value;
+        }
+    }
     return NULL;
 }
 
-BOOL isKeyExists(char *key, Dict *dict) {
-    // Todo: implement get by key
+BOOL isKeyExists(char *key, Dict *kwargs) {
+    for (int i=0;i< kwargs->size;i++) {
+        if (strcmp(kwargs->arr[i].key, key) == 0) {
+            return TRUE;
+        }
+    }
     return FALSE;
 }
 
@@ -248,13 +277,13 @@ void freeList(List *lst) {
     }
 }
 
-void insertDataToEndList(List *pList, char* str) {
+void insertDataToEndList(List *pList, char *str) {
     ListNode *lNode;
     lNode = createNodeElement(str, NULL);
     insertNodeToEndList(pList, lNode);
 }
 
-ListNode *createNodeElement(char* str, ListNode *next) {
+ListNode *createNodeElement(char *str, ListNode *next) {
     ListNode *pNode;
     pNode = malloc(sizeof(ListNode));
     pNode->data = str;

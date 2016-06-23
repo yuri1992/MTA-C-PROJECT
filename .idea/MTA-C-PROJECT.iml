@@ -3,8 +3,14 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/add-apt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/add-apt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/apartment.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/apartment.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/buy-apt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/buy-apt.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/delete-apt.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/delete-apt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/find-apt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/find-apt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lineinteperter.c" isTestSource="false" />
