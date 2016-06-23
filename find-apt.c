@@ -36,8 +36,6 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
         if (rooms && tmp.entryDate > date)
             continue;
 
-
-
         printApartment(tmp);
     }
 }

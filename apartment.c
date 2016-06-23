@@ -15,7 +15,6 @@ void printApartment(Apartment apartment){
     // Todo: humanize this date, to YYYY-MM-DD
     printf("Apartment Date of entry: %d \n", apartment.entryDate);
     printf("----------------------------------------\n");
-
 }
 
 void sortTable(ApartmentTable db, BOOL desc) {
