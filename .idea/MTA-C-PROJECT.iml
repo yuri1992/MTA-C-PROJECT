@@ -13,6 +13,8 @@
       <sourceFolder url="file://$MODULE_DIR$/delete-apt.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/find-apt.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/find-apt.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/history.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/history.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lineinteperter.c" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lineinteperter.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.c" isTestSource="false" />

@@ -47,7 +47,7 @@ void start(ApartmentTable* db);
 
 void exitHandler(ApartmentTable* db);
 
-COMMAND *commandLineInterperter(char *str);
+COMMAND *commandLineParser(char *str);
 
 List *extractArgs(char *args);
 

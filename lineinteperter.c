@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lineinteperter.h"
+#include "history.h"
 #include "find-apt.h"
 #include "add-apt.h"
 
@@ -25,7 +26,7 @@ void start(ApartmentTable *db) {
                 printf("Good Bye!");
                 break;
             } else {
-                currCommand = commandLineInterperter(line);
+                currCommand = commandLineParser(line);
                 debugCommand(*currCommand);
                 routerHandler(currCommand, db);
             }
@@ -104,7 +105,7 @@ ApartmentTable *initialProgramState() {
     // Todo: initial all pre saved data stores like commands, apartments, etc ..
 }
 
-COMMAND *commandLineInterperter(char *str) {
+COMMAND *commandLineParser(char *str) {
     COMMAND *cmd = malloc(sizeof(Dict));
     char *args = NULL, *command_name = NULL;
 
