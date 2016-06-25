@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
+#include <stdint.h>
 #include "add-apt.h"
 
 void add_apt(COMMAND cmd, ApartmentTable *db) {
@@ -28,18 +30,15 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
     ptr = ptr->next;
     db->arr[nSize].rooms = (short) atoi(ptr->data);
 
+    db->arr[nSize].insertDate = time(NULL);
+
     // Fourth, Fifth, Sixth =>  day, month, year
-    int day, month, year;
     ptr = ptr->next;
-    day = atoi(ptr->data);
-
-    ptr = ptr->next;
-    month = atoi(ptr->data);
+    db->arr[nSize].entry_day = (short) atoi(ptr->data);
 
     ptr = ptr->next;
-    year = atoi(ptr->data);
+    db->arr[nSize].entry_month = (short) atoi(ptr->data);
 
-    printf("%d/%d/%d", day, month, year);
-
-
+    ptr = ptr->next;
+    db->arr[nSize].entry_year = (short) atoi(ptr->data);
 }

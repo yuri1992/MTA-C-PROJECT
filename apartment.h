@@ -5,14 +5,17 @@
 #ifndef MTA_C_PROJECT_APARTMENT_H
 #define MTA_C_PROJECT_APARTMENT_H
 
+#include <time.h>
 #include "utils.h"
-
 typedef struct apartment {
     int id;
     int price;
     char* address;
     short int rooms;
-    short int entryDate;
+    short int entry_year;
+    short int entry_month;
+    short int entry_day;
+    time_t insertDate; // epoch time
 } Apartment;
 
 

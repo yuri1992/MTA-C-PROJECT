@@ -68,39 +68,8 @@ ApartmentTable *initialProgramState() {
     // !!!!! only for now i initial the table with "dump" data for tests and debug
     ApartmentTable *table = NULL;
     table = malloc(sizeof(ApartmentTable));
-    table->arr = malloc(sizeof(Apartment) * 5);
-    table->size = 5;
-
-    table->arr[0].id = 1;
-    table->arr[0].price = 1000000;
-    table->arr[0].rooms = 4;
-    table->arr[0].address = strdup("Steet 12, City, Israel");
-    table->arr[0].entryDate = (short) 123213212;
-
-    table->arr[1].id = 2;
-    table->arr[1].price = 1123212;
-    table->arr[1].rooms = 3;
-    table->arr[1].address = strdup("Steet 12, City, Israel");
-    table->arr[1].entryDate = (short) 123213212;
-
-    table->arr[2].id = 3;
-    table->arr[2].price = 100000;
-    table->arr[2].rooms = 1;
-    table->arr[2].address = strdup("Steet 12, Cidfgdgty, Israel");
-    table->arr[2].entryDate = (short) 123213212;
-
-    table->arr[3].id = 4;
-    table->arr[3].price = 3000000;
-    table->arr[3].rooms = 2;
-    table->arr[3].address = strdup("Steet 12, City, Israel");
-    table->arr[3].entryDate = (short) 123213212;
-
-    table->arr[4].id = 5;
-    table->arr[4].price = 12132222;
-    table->arr[4].rooms = 6;
-    table->arr[4].address = strdup("Steet 12, City, Israel");
-    table->arr[4].entryDate = (short) 123213212;
-
+    table->arr = malloc(sizeof(Apartment));
+    table->size = 0;
     return table;
     // Todo: initial all pre saved data stores like commands, apartments, etc ..
 }
