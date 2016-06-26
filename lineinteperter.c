@@ -4,6 +4,7 @@
 #include "history.h"
 #include "find-apt.h"
 #include "add-apt.h"
+#include "utils.h"
 
 void start(ApartmentTable *db) {
     /*
@@ -81,6 +82,7 @@ COMMAND *commandLineParser(char *str) {
     // parsing command name
     command_name = strtok(str, " ");
     cmd->command = strdup(command_name);
+    cmd->args = NULL;
     cmd->kwargs = NULL;
 
     /*
@@ -100,7 +102,7 @@ COMMAND *commandLineParser(char *str) {
 Dict* extractKwargs(char *str) {
     int pySize = 2, size = 0;
     KeyValue *arr;
-    Dict* pt = malloc(sizeof(Dict) * 1);
+    Dict* pt = malloc(sizeof(Dict));
 
     arr = malloc(sizeof(KeyValue) * 2);
     str = strtok(str, "-");
@@ -111,13 +113,12 @@ Dict* extractKwargs(char *str) {
             arr = realloc(arr, sizeof(Dict) * pySize);
         }
         arr[size].key = splitFirst(str, ' ');
+        arr[size].value = NULL;
         if (arr[size].key == NULL) {
             arr[size].key = strdup(str);
         } else {
             if (strlen(str) > strlen(arr[size].key)) {
-                arr[size].value = strdup(str + strlen(arr[size].key));
-            } else {
-                arr[size].value = NULL;
+                arr[size].value = trim(strdup(str + strlen(arr[size].key)));
             }
         }
         str = strtok(NULL, "-");
@@ -141,9 +142,11 @@ char *splitFirst(const char *str, char needle) {
         return NULL;
 
     strOut = malloc(sizeof(char) * (strEnd - str) + 1);
-    strncpy(strOut, str, strEnd - str);
+    memset(strOut,'\0',sizeof(strOut));
 
-    return strOut;
+    strncpy(strOut, str, strEnd - str);
+    strOut[strEnd - str] = '\0';
+    return trim(strOut);
 }
 
 List *extractArgs(char *args) {
@@ -195,7 +198,9 @@ void debugCommand(COMMAND command1) {
 void printDict(Dict* kwargs) {
     for (int i = 0; i < kwargs->size; i++) {
         printf("Key : %s \n", kwargs->arr[i].key);
-        printf("Value : %s \n", kwargs->arr[i].value);
+        if (kwargs->arr[i].value != NULL) {
+            printf("Value : %s \n", kwargs->arr[i].value);
+        }
     }
 
 }
@@ -265,7 +270,7 @@ void printList(List *pList) {
     ListNode *curr;
     curr = pList->head;
     while (curr != NULL) {
-        printf("%s \n", curr->data);
+            printf("%s \n", curr->data);
         curr = curr->next;
     }
 

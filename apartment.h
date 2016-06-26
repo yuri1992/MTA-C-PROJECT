@@ -26,6 +26,6 @@ typedef struct apartment_db {
 } ApartmentTable;
 
 void printApartment(Apartment apartment);
-void sortTable(ApartmentTable db, BOOL desc);
+ApartmentTable sortTable(ApartmentTable db, BOOL desc);
 
 #endif //MTA_C_PROJECT_APARTMENT_H
