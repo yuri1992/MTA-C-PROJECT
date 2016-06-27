@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include "history.h"
 #include "apartment.h"
 #include "utils.h"
 
@@ -33,17 +34,18 @@ typedef struct dict {
 } Dict;
 
 typedef struct command {
+    char *raw_command;
     char *command;
     List *args;
     Dict *kwargs;
 } COMMAND;
 
 
-ApartmentTable* initialProgramState();
+ApartmentTable *initialProgramState(History *hist);
 
-void routerHandler(COMMAND *currCommand, ApartmentTable* db);
+void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist);
 
-void start(ApartmentTable* db);
+void start(ApartmentTable* db, History* hist);
 
 void exitHandler(ApartmentTable* db);
 

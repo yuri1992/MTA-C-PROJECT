@@ -1,12 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lineinteperter.h"
-#include "history.h"
 #include "find-apt.h"
 #include "add-apt.h"
-#include "utils.h"
 
-void start(ApartmentTable *db) {
+void start(ApartmentTable *db, History *hist) {
     /*
      * waiting for input program, kind of router function
      */
@@ -28,27 +26,62 @@ void start(ApartmentTable *db) {
                 break;
             } else {
                 currCommand = commandLineParser(line);
-                debugCommand(*currCommand);
-                routerHandler(currCommand, db);
+                //debugCommand(*currCommand);
+                routerHandler(currCommand, db, hist);
             }
         }
     }
 
 }
 
-void routerHandler(COMMAND *currCommand, ApartmentTable *db) {
+void invoke_from_history(COMMAND *currCommand, ApartmentTable *db, History *hist) {
+    BOOL is_replace_required = FALSE;
+    char* find_str = NULL;
+    char* replace_str = NULL;
+    char* found_str = splitFirst(currCommand->command, '^');
+    int history_command_number = 0;
+
+    if (found_str == NULL) {
+        if (currCommand->command[1] == '!') {
+            history_command_number = -1;
+        } else {
+            history_command_number = atoi(currCommand->command + 1);
+        }
+    } else {
+        history_command_number = atoi(found_str +1);
+        find_str = splitFirst(currCommand->command + strlen(found_str) + 1, '^');
+        replace_str = strdup(currCommand->command + strlen(find_str) + strlen(found_str) + 2);
+        is_replace_required = TRUE;
+    }
+
+    char* command_from_hist = get_command_by_index(history_command_number, hist);
+    char* command_to_run = strdup(command_from_hist);
+
+    if (find_str != NULL && replace_str != NULL) {
+        command_to_run = str_replace(command_to_run, find_str, replace_str);
+    }
+
+    currCommand = commandLineParser(command_to_run);
+    routerHandler(currCommand, db, hist);
+}
+
+void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
     if (strcmp(currCommand->command, "find-apt") == 0) {
+        append_last_search(hist, currCommand->raw_command);
         find_apt(*currCommand, *db);
     } else if (strcmp(currCommand->command, "buy-apt") == 0) {
-
+        append_last_search(hist, currCommand->raw_command);
     } else if (strcmp(currCommand->command, "delete-apt") == 0) {
-
+        append_last_search(hist, currCommand->raw_command);
     } else if (strcmp(currCommand->command, "add-apt") == 0) {
+        append_last_search(hist, currCommand->raw_command);
         add_apt(*currCommand, db);
     } else if (strcmp(currCommand->command, "history") == 0) {
-
+        history(*hist);
     } else if (strcmp(currCommand->command, "short_history") == 0) {
-
+        short_history(*hist);
+    } else if (currCommand->command[0] == '!') {
+        invoke_from_history(currCommand, db, hist);
     }
 }
 
@@ -60,17 +93,24 @@ void exitHandler(ApartmentTable *table) {
 
 }
 
-ApartmentTable *initialProgramState() {
+ApartmentTable *initialProgramState(History *hist) {
     /*
      * initializer for the all project, suppose to initial all data structures and
      * load pre-saved data
      */
 
     // !!!!! only for now i initial the table with "dump" data for tests and debug
-    ApartmentTable *table = NULL;
-    table = malloc(sizeof(ApartmentTable));
-    table->arr = malloc(sizeof(Apartment));
+    ApartmentTable *table = malloc(sizeof(ApartmentTable));
+    table->arr = malloc(sizeof(Apartment*));
     table->size = 0;
+    table->r_size = 1;
+
+    for (int i=0; i<N;i++) {
+        hist->short_term_history[i] = NULL;
+    }
+
+    hist->long_term_history = NULL;
+    hist->size_long_history = 0;
     return table;
     // Todo: initial all pre saved data stores like commands, apartments, etc ..
 }
@@ -80,6 +120,7 @@ COMMAND *commandLineParser(char *str) {
     char *args = NULL, *command_name = NULL;
 
     // parsing command name
+    cmd->raw_command = strdup(str);
     command_name = strtok(str, " ");
     cmd->command = strdup(command_name);
     cmd->args = NULL;

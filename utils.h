@@ -10,7 +10,8 @@ typedef int BOOL;
 #define TRUE 1
 
 char *substring(char *string, int startPos, int length);
-char *trim(char *stirng);
+char *str_replace(char *org_str, char *search, char *replace);
+char *trim(char *string);
 
 
 #endif //MTA_C_PROJECT_UTILS_H

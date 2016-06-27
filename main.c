@@ -1,5 +1,5 @@
 #include "lineinteperter.h"
-
+#include "history.h"
 
 
 int main() {
@@ -13,8 +13,9 @@ int main() {
      find-apt -Date 290916 -s
      * find-apt -MinNumRooms 3 -MaxNumRooms 5 -MaxPrice 1750000 -s
      */
+    History hist;
     ApartmentTable *db = NULL;
-    db = initialProgramState();
-    start(db);
+    db = initialProgramState(&hist);
+    start(db, &hist);
     return 0;
 }

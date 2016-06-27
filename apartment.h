@@ -22,6 +22,7 @@ typedef struct apartment {
 // Todo: maybe we will need to use linkedlist for better accessing.
 typedef struct apartment_db {
     int size;
+    int r_size;
     Apartment* arr;
 } ApartmentTable;
 

@@ -2,21 +2,21 @@
 // Created by yurir on 6/23/16.
 //
 
+#include "add-apt.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include <time.h>
-#include <stdint.h>
-#include "add-apt.h"
 
 void add_apt(COMMAND cmd, ApartmentTable *db) {
     int nSize = db->size;
-    db->arr = realloc(db->arr, sizeof(Apartment) * (nSize+1));
-    assert(db->arr != NULL);
+    if (nSize + 1 == db->r_size) {
+        db->r_size *= 2;
+        db->arr = realloc(db->arr, sizeof(Apartment) * db->r_size);
+        assert(db->arr != NULL);
+    }
     db->size = nSize + 1;
 
     ListNode *ptr = cmd.args->head;
-
     db->arr[nSize].id = db->arr[nSize - 1].id + 1;
 
     // First Argument is Address
