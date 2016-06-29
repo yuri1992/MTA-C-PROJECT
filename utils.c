@@ -69,3 +69,22 @@ char *str_replace(char *org_str, char *search, char *replace) {
     strcpy(tmp, org_str);
     return result;
 }
+
+char *splitFirst(const char *str, char needle) {
+    /*
+     * return char* str that wall allocated till first occur of char,
+     * return NULL if not found
+     */
+    char *strEnd, *strOut;
+    strEnd = strchr(str, needle);
+
+    if (strEnd == NULL)
+        return NULL;
+
+    strOut = malloc(sizeof(char) * (strEnd - str) + 1);
+    memset(strOut,'\0',sizeof(strOut));
+
+    strncpy(strOut, str, strEnd - str);
+    strOut[strEnd - str] = '\0';
+    return trim(strOut);
+}

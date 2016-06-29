@@ -21,7 +21,7 @@ void start(ApartmentTable *db, History *hist) {
         gets(line);
         if (line[0] != '\0') {
             if (strcmp(line, "exit") == 0) {
-                exitHandler(db);
+                exitHandler(db, hist);
                 printf("Good Bye!");
                 break;
             } else {
@@ -38,19 +38,19 @@ void invoke_from_history(COMMAND *currCommand, ApartmentTable *db, History *hist
     BOOL is_replace_required = FALSE;
     char* find_str = NULL;
     char* replace_str = NULL;
-    char* found_str = splitFirst(currCommand->command, '^');
+    char* found_str = splitFirst(currCommand->raw_command, '^');
     int history_command_number = 0;
 
     if (found_str == NULL) {
         if (currCommand->command[1] == '!') {
             history_command_number = -1;
         } else {
-            history_command_number = atoi(currCommand->command + 1);
+            history_command_number = atoi(currCommand->raw_command + 1);
         }
     } else {
         history_command_number = atoi(found_str +1);
-        find_str = splitFirst(currCommand->command + strlen(found_str) + 1, '^');
-        replace_str = strdup(currCommand->command + strlen(find_str) + strlen(found_str) + 2);
+        find_str = splitFirst(currCommand->raw_command + strlen(found_str) + 1, '^');
+        replace_str = strdup(currCommand->raw_command + strlen(find_str) + strlen(found_str) + 2);
         is_replace_required = TRUE;
     }
 
@@ -85,12 +85,14 @@ void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
     }
 }
 
-void exitHandler(ApartmentTable *table) {
+void exitHandler(ApartmentTable *table, History* hist) {
     /*
      * Exit function handler
      */
-    // Todo: save all necessary data to disk
-
+    // Todo: save history commands to file
+    save_history_to_file(*hist);
+    // Todo: save ApartmentTable to local file
+    save_apartment_table_to_file(table);
 }
 
 ApartmentTable *initialProgramState(History *hist) {
@@ -98,21 +100,10 @@ ApartmentTable *initialProgramState(History *hist) {
      * initializer for the all project, suppose to initial all data structures and
      * load pre-saved data
      */
-
-    // !!!!! only for now i initial the table with "dump" data for tests and debug
-    ApartmentTable *table = malloc(sizeof(ApartmentTable));
-    table->arr = malloc(sizeof(Apartment*));
-    table->size = 0;
-    table->r_size = 1;
-
-    for (int i=0; i<N;i++) {
-        hist->short_term_history[i] = NULL;
-    }
-
-    hist->long_term_history = NULL;
-    hist->size_long_history = 0;
+    ApartmentTable* table;
+    table = load_apartment_table_from_file();
+    load_from_history_file(hist);
     return table;
-    // Todo: initial all pre saved data stores like commands, apartments, etc ..
 }
 
 COMMAND *commandLineParser(char *str) {
@@ -169,25 +160,6 @@ Dict* extractKwargs(char *str) {
     pt->size = size;
     pt->arr = arr;
     return pt;
-}
-
-char *splitFirst(const char *str, char needle) {
-    /*
-     * return char* str that wall allocated till first occur of char,
-     * return NULL if not found
-     */
-    char *strEnd, *strOut;
-    strEnd = strchr(str, needle);
-
-    if (strEnd == NULL)
-        return NULL;
-
-    strOut = malloc(sizeof(char) * (strEnd - str) + 1);
-    memset(strOut,'\0',sizeof(strOut));
-
-    strncpy(strOut, str, strEnd - str);
-    strOut[strEnd - str] = '\0';
-    return trim(strOut);
 }
 
 List *extractArgs(char *args) {

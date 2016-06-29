@@ -9,15 +9,18 @@
 
 void add_apt(COMMAND cmd, ApartmentTable *db) {
     int nSize = db->size;
-    if (nSize + 1 == db->r_size) {
+    if (db->size == 0) {
+        db->r_size = 2;
+        db->arr = malloc(sizeof(Apartment) * db->r_size);
+        assert(db->arr != NULL);
+    } else if (db->size == db->r_size) {
         db->r_size *= 2;
         db->arr = realloc(db->arr, sizeof(Apartment) * db->r_size);
         assert(db->arr != NULL);
     }
-    db->size = nSize + 1;
 
     ListNode *ptr = cmd.args->head;
-    db->arr[nSize].id = db->arr[nSize - 1].id + 1;
+    db->arr[nSize].id = nSize;
 
     // First Argument is Address
     db->arr[nSize].address = strdup(ptr->data);
@@ -30,7 +33,6 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
     ptr = ptr->next;
     db->arr[nSize].rooms = (short) atoi(ptr->data);
 
-    db->arr[nSize].insertDate = time(NULL);
 
     // Fourth, Fifth, Sixth =>  day, month, year
     ptr = ptr->next;
@@ -41,4 +43,12 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
 
     ptr = ptr->next;
     db->arr[nSize].entry_year = (short) atoi(ptr->data);
+
+    time_t now = time(NULL);
+    struct tm *time_obj= localtime(&now);
+
+    db->arr[nSize].created_day = (short) time_obj->tm_mday;
+    db->arr[nSize].created_month = (short) time_obj->tm_mon;
+    db->arr[nSize].created_year = (short) (time_obj->tm_year - 100);
+    db->size++;
 }

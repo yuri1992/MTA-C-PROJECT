@@ -7,6 +7,8 @@
 
 #include <time.h>
 #include "utils.h"
+#define APARTMENT_FILE "db.txt"
+
 typedef struct apartment {
     int id;
     int price;
@@ -15,11 +17,15 @@ typedef struct apartment {
     short int entry_year;
     short int entry_month;
     short int entry_day;
-    time_t insertDate; // epoch time
+    short int created_year;
+    short int created_month;
+    short int created_day;
+
 } Apartment;
 
+typedef unsigned char BYTE;
 
-// Todo: maybe we will need to use linkedlist for better accessing.
+
 typedef struct apartment_db {
     int size;
     int r_size;
@@ -28,5 +34,8 @@ typedef struct apartment_db {
 
 void printApartment(Apartment apartment);
 ApartmentTable sortTable(ApartmentTable db, BOOL desc);
+
+void save_apartment_table_to_file(ApartmentTable *db);
+ApartmentTable* load_apartment_table_from_file();
 
 #endif //MTA_C_PROJECT_APARTMENT_H

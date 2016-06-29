@@ -45,15 +45,15 @@ ApartmentTable *initialProgramState(History *hist);
 
 void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist);
 
-void start(ApartmentTable* db, History* hist);
+void start(ApartmentTable *db, History *hist);
 
-void exitHandler(ApartmentTable* db);
+void exitHandler(ApartmentTable *db, History *hist);
 
 COMMAND *commandLineParser(char *str);
 
 List *extractArgs(char *args);
 
-Dict * extractKwargs(char *str);
+Dict *extractKwargs(char *str);
 
 char *splitFirst(const char *str, char needle);
 
