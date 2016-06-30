@@ -6,11 +6,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <unistd.h>
 #include "history.h"
 
 
 void append_last_search(History *hist, char *str) {
+    /*
+     * appending command to history, first adding it to the short history array
+     * and then moving it the long memory array
+     */
     char *tmp = NULL;
     // all short term history is full
     if (hist->short_term_history[N - 1] != NULL) {
@@ -23,7 +26,7 @@ void append_last_search(History *hist, char *str) {
             strcpy(hist->short_term_history[i], hist->short_term_history[i - 1]);
         }
     }
-    free(hist->short_term_history[0]);
+
     hist->short_term_history[0] = malloc(strlen(str) + 1);
     strcpy(hist->short_term_history[0], str);
 
@@ -44,6 +47,9 @@ void append_last_search(History *hist, char *str) {
 }
 
 void short_history(History hist) {
+    /*
+     * short_history - printing all commands in short hitory array
+     */
     for (int i = N - 1; i >= 0; i--) {
         if (hist.short_term_history[i] != NULL)
             printf("%d: %s\n", hist.size_long_history + (N - i), hist.short_term_history[i]);
@@ -52,6 +58,9 @@ void short_history(History hist) {
 }
 
 void history(History hist) {
+    /*
+     * history - printing all command in long term history
+     */
     for (int i = 0; i < hist.size_long_history; i++) {
         printf("%d: %s\n", i + 1, hist.long_term_history[i]);
     }
@@ -59,6 +68,9 @@ void history(History hist) {
 }
 
 char *get_command_by_index(int ind, History *hist) {
+    /*
+     * return the command by index
+     */
     int total = hist->size_long_history;
     if (ind == -1) {
         return hist->short_term_history[0];
@@ -70,6 +82,9 @@ char *get_command_by_index(int ind, History *hist) {
 }
 
 void load_from_history_file(History *hist) {
+    /*
+     * loads history command from file
+     */
     FILE *fp1 = NULL;
     fp1 = fopen((const char *) HISTORY_FILE, "r");
 
@@ -102,6 +117,9 @@ void load_from_history_file(History *hist) {
 }
 
 void save_history_to_file(History hist) {
+    /*
+     * saving all commands to file
+     */
     FILE *fp1 = NULL;
     fp1 = fopen((const char *) HISTORY_FILE, "w");
     assert(fp1 != NULL);

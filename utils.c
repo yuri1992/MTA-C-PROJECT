@@ -8,6 +8,9 @@
 #include "utils.h"
 
 char *trim(char *string) {
+    /*
+     * removing whitespaces from end and start of string
+     */
     //removing first whitespace
     if (string[0] == ' ') {
         char *tmp = substring(string, 2, (int) strlen(string));
@@ -25,6 +28,9 @@ char *trim(char *string) {
 
 char *substring(char *string, int startPos, int length)
 {
+    /*
+     * making substirng of the @string
+     */
     char *ptrStr;
     int c;
 
@@ -42,6 +48,9 @@ char *substring(char *string, int startPos, int length)
 }
 
 char *str_replace(char *org_str, char *search, char *replace) {
+    /*
+     * replacing string with other stirng
+     */
     char *result; // the return string
     char *ins;    // the next insert point
     char *tmp;    // varies

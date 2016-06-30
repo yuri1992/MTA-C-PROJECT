@@ -5,9 +5,12 @@
 #include "add-apt.h"
 #include <stdlib.h>
 #include <assert.h>
-#include <string.h>
 
 void add_apt(COMMAND cmd, ApartmentTable *db) {
+    /*
+     * add_apt adding new apartment to the @db
+     * add_apt get all his arguments in cmd.args
+     */
     int nSize = db->size;
     if (db->size == 0) {
         db->r_size = 2;
@@ -20,7 +23,7 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
     }
 
     ListNode *ptr = cmd.args->head;
-    db->arr[nSize].id = nSize;
+    db->arr[nSize].id = nSize + 1;
 
     // First Argument is Address
     db->arr[nSize].address = strdup(ptr->data);
@@ -45,7 +48,7 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
     db->arr[nSize].entry_year = (short) atoi(ptr->data);
 
     time_t now = time(NULL);
-    struct tm *time_obj= localtime(&now);
+    struct tm *time_obj = localtime(&now);
 
     db->arr[nSize].created_day = (short) time_obj->tm_mday;
     db->arr[nSize].created_month = (short) time_obj->tm_mon;

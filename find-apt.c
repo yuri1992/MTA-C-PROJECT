@@ -5,15 +5,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include "find-apt.h"
-#include "utils.h"
 
 void find_apt(COMMAND cmd, ApartmentTable db) {
     /*
      * find_apt
      * Printing the apartments that matched the cmd->kwargs filter
      */
-
-    // Todo: pre check if -sr or -r included in kwargs and sort the array currently
 
     // Pre sorting the array tto enable sorting view
     BOOL isAllocated = FALSE;
@@ -30,6 +27,7 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
 
     for (int i = 0; i < db.size; i++) {
         Apartment tmp = ptr.arr[i];
+        time_t d1, d2;
         char *pt;
         // if apartment not match the filter, we continue to the next
 
@@ -48,6 +46,27 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
         if (rooms && tmp.rooms > rooms)
             continue;
 
+
+        // return all apartments that was inserted @dayBack ago
+        pt = getValueByKey("Enter", cmd.kwargs);
+        int dayBack = (int) (pt ? atoi(pt) : NULL);
+        if (dayBack > 0) {
+            struct tm entryDate;
+            int now = (int) time(NULL);
+            now = now - (84600 * dayBack);
+
+            entryDate.tm_hour = 23;
+            entryDate.tm_min = 59;
+            entryDate.tm_sec = 59;
+            entryDate.tm_year = tmp.entry_year + 100;
+            entryDate.tm_mon = tmp.entry_month - 1;
+            entryDate.tm_mday = tmp.entry_day;
+
+            d1 = mktime(&entryDate);
+            if (now - d1  > 0)
+                continue;
+        }
+
         char* date = getValueByKey("Date", cmd.kwargs);
         if (date != NULL) {
             struct tm endDate;
@@ -65,18 +84,18 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
             startDate.tm_year = tmp.entry_year + 100;
             startDate.tm_mon = tmp.entry_month - 1;
             startDate.tm_mday = tmp.entry_day;
-            time_t d1, d2;
+
             d1 = mktime(&endDate);
             d2 = mktime(&startDate);
             if (d2 - d1 > 0)
                 continue;
         }
 
-
         printApartment(tmp);
     }
 
     if (isAllocated == TRUE) {
+        // free the memory that allocated if the array is sorted
         free(ptr.arr);
     }
 }

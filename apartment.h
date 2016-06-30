@@ -7,12 +7,13 @@
 
 #include <time.h>
 #include "utils.h"
+
 #define APARTMENT_FILE "db.txt"
 
 typedef struct apartment {
     int id;
     int price;
-    char* address;
+    char *address;
     short int rooms;
     short int entry_year;
     short int entry_month;
@@ -29,13 +30,15 @@ typedef unsigned char BYTE;
 typedef struct apartment_db {
     int size;
     int r_size;
-    Apartment* arr;
+    Apartment *arr;
 } ApartmentTable;
 
 void printApartment(Apartment apartment);
+
 ApartmentTable sortTable(ApartmentTable db, BOOL desc);
 
 void save_apartment_table_to_file(ApartmentTable *db);
-ApartmentTable* load_apartment_table_from_file();
+
+ApartmentTable *load_apartment_table_from_file();
 
 #endif //MTA_C_PROJECT_APARTMENT_H

@@ -6,7 +6,7 @@
 
 void start(ApartmentTable *db, History *hist) {
     /*
-     * waiting for input program, kind of router function
+     * Processing the program, Routing the output, trigger exitSigal
      */
     BOOL isEOF = FALSE;
     char line[INPUT_MAX];
@@ -35,37 +35,48 @@ void start(ApartmentTable *db, History *hist) {
 }
 
 void invoke_from_history(COMMAND *currCommand, ApartmentTable *db, History *hist) {
+    /*
+     * Invoking A command form the history
+     */
     BOOL is_replace_required = FALSE;
-    char* find_str = NULL;
-    char* replace_str = NULL;
-    char* found_str = splitFirst(currCommand->raw_command, '^');
+    char *find_str = NULL;
+    char *replace_str = NULL;
+    char *found_str = splitFirst(currCommand->raw_command, '^');
     int history_command_number = 0;
 
     if (found_str == NULL) {
+        // invoke command without replacing string
         if (currCommand->command[1] == '!') {
             history_command_number = -1;
         } else {
             history_command_number = atoi(currCommand->raw_command + 1);
         }
     } else {
-        history_command_number = atoi(found_str +1);
+        // invoke command with replacing some string in it
+        history_command_number = atoi(found_str + 1);
         find_str = splitFirst(currCommand->raw_command + strlen(found_str) + 1, '^');
         replace_str = strdup(currCommand->raw_command + strlen(find_str) + strlen(found_str) + 2);
         is_replace_required = TRUE;
     }
 
-    char* command_from_hist = get_command_by_index(history_command_number, hist);
-    char* command_to_run = strdup(command_from_hist);
+    char *command_from_hist = get_command_by_index(history_command_number, hist);
+    char *command_to_run = strdup(command_from_hist);
 
     if (find_str != NULL && replace_str != NULL) {
+        // replacing string
         command_to_run = str_replace(command_to_run, find_str, replace_str);
     }
 
     currCommand = commandLineParser(command_to_run);
+    // invoking the command again
     routerHandler(currCommand, db, hist);
 }
 
 void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
+    /*
+     * Factory Pattern function -
+     * routing the COMMAND to the right function
+     */
     if (strcmp(currCommand->command, "find-apt") == 0) {
         append_last_search(hist, currCommand->raw_command);
         find_apt(*currCommand, *db);
@@ -85,13 +96,11 @@ void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
     }
 }
 
-void exitHandler(ApartmentTable *table, History* hist) {
+void exitHandler(ApartmentTable *table, History *hist) {
     /*
      * Exit function handler
      */
-    // Todo: save history commands to file
     save_history_to_file(*hist);
-    // Todo: save ApartmentTable to local file
     save_apartment_table_to_file(table);
 }
 
@@ -100,13 +109,16 @@ ApartmentTable *initialProgramState(History *hist) {
      * initializer for the all project, suppose to initial all data structures and
      * load pre-saved data
      */
-    ApartmentTable* table;
+    ApartmentTable *table;
     table = load_apartment_table_from_file();
     load_from_history_file(hist);
     return table;
 }
 
 COMMAND *commandLineParser(char *str) {
+    /*
+     * Command line parser
+     */
     COMMAND *cmd = malloc(sizeof(Dict));
     char *args = NULL, *command_name = NULL;
 
@@ -131,10 +143,13 @@ COMMAND *commandLineParser(char *str) {
     return cmd;
 }
 
-Dict* extractKwargs(char *str) {
+Dict *extractKwargs(char *str) {
+    /*
+     * extracting kwargs (key value args)
+     */
     int pySize = 2, size = 0;
     KeyValue *arr;
-    Dict* pt = malloc(sizeof(Dict));
+    Dict *pt = malloc(sizeof(Dict));
 
     arr = malloc(sizeof(KeyValue) * 2);
     str = strtok(str, "-");
@@ -163,6 +178,9 @@ Dict* extractKwargs(char *str) {
 }
 
 List *extractArgs(char *args) {
+    /*
+     * extracting args from command line
+     */
     List *pList = malloc(sizeof(List));
     char *tmp, *last;
 
@@ -189,6 +207,9 @@ List *extractArgs(char *args) {
 
 
 void debugCommand(COMMAND command1) {
+    /*
+     * internal use only, for debbuging reasons
+     */
     printf("the command name is %s \n", command1.command);
 
     if (isEmptyList(command1.args)) {
@@ -208,7 +229,7 @@ void debugCommand(COMMAND command1) {
 
 }
 
-void printDict(Dict* kwargs) {
+void printDict(Dict *kwargs) {
     for (int i = 0; i < kwargs->size; i++) {
         printf("Key : %s \n", kwargs->arr[i].key);
         if (kwargs->arr[i].value != NULL) {
@@ -219,7 +240,7 @@ void printDict(Dict* kwargs) {
 }
 
 char *getValueByKey(char *key, Dict *kwargs) {
-    for (int i=0;i< kwargs->size;i++) {
+    for (int i = 0; i < kwargs->size; i++) {
         if (strcmp(kwargs->arr[i].key, key) == 0) {
             return kwargs->arr[i].value;
         }
@@ -228,7 +249,7 @@ char *getValueByKey(char *key, Dict *kwargs) {
 }
 
 BOOL isKeyExists(char *key, Dict *kwargs) {
-    for (int i=0;i< kwargs->size;i++) {
+    for (int i = 0; i < kwargs->size; i++) {
         if (strcmp(kwargs->arr[i].key, key) == 0) {
             return TRUE;
         }
@@ -283,7 +304,7 @@ void printList(List *pList) {
     ListNode *curr;
     curr = pList->head;
     while (curr != NULL) {
-            printf("%s \n", curr->data);
+        printf("%s \n", curr->data);
         curr = curr->next;
     }
 

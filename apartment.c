@@ -21,16 +21,16 @@ void printApartment(Apartment apartment) {
         Database entry date: 12.6.2016
      */
     printf("Apt details:\n");
-    printf("Code: %d \n", apartment.id);
-    printf("Address: %s \n", apartment.address);
-    printf("Number of rooms: %d \n", apartment.rooms);
-    printf("Price: %d \n", apartment.price);
-
-    printf("Entry date: %d.%d.%d \n", apartment.entry_day, apartment.entry_month, apartment.entry_year + 2000);
-    printf("Database entry date: %d.%d.%d \n\n", apartment.created_day, apartment.created_month, apartment.created_year + 2000);
+    printf("Code: %d\n", apartment.id);
+    printf("Address: %s\n", apartment.address);
+    printf("Number of rooms: %d\n", apartment.rooms);
+    printf("Price: %d\n", apartment.price);
+    printf("Entry date: %d.%d.%d\n", apartment.entry_day, apartment.entry_month, apartment.entry_year + 2000);
+    printf("Database entry date: %d.%d.%d\n", apartment.created_day, apartment.created_month,
+           apartment.created_year + 2000);
 }
 
-void swapApartment(Apartment* pt1, Apartment* pt2) {
+void swapApartment(Apartment *pt1, Apartment *pt2) {
     /*
      * Swap Apartment
      */
@@ -39,9 +39,13 @@ void swapApartment(Apartment* pt1, Apartment* pt2) {
     *pt2 = tmp;
 }
 
-ApartmentTable* load_apartment_table_from_file() {
+ApartmentTable *load_apartment_table_from_file() {
+    /*
+     * Loading apartment table(db) from file
+     * the structure of it defined at the project demand
+     */
     ApartmentTable *db = malloc(sizeof(ApartmentTable));
-    db->arr = malloc(sizeof(Apartment*));
+    db->arr = malloc(sizeof(Apartment *));
     db->size = 0;
     db->r_size = 0;
 
@@ -50,8 +54,8 @@ ApartmentTable* load_apartment_table_from_file() {
 
     if (fp1 != NULL) {
         int code = 0;
-        int* arrSize = &db->size;
-        while(fread(&code, sizeof(short int), 1, fp1) > 0) {
+        int *arrSize = &db->size;
+        while (fread(&code, sizeof(short int), 1, fp1) > 0) {
             int address_len;
             if (db->size == 0) {
                 db->r_size = 2;
@@ -72,18 +76,18 @@ ApartmentTable* load_apartment_table_from_file() {
             db->arr[*arrSize].address[address_len] = '\0';
 
             // reading the price of apartment
-            fread(&(db->arr[*arrSize].price), sizeof(int), 1 ,fp1);
+            fread(&(db->arr[*arrSize].price), sizeof(int), 1, fp1);
 
             BYTE decoded[5] = {};
-            fread(&decoded, sizeof(BYTE), 5 ,fp1);
+            fread(&decoded, sizeof(BYTE), 5, fp1);
             db->arr[*arrSize].rooms = (short int) ((decoded[0] & 0xF0) >> 4);
             db->arr[*arrSize].entry_day = (short int) ((decoded[0] & 0x0F) << 1 | (decoded[1] & 0x80) >> 7);
             db->arr[*arrSize].entry_month = (short int) ((decoded[1] >> 3) & 0x0F);
             db->arr[*arrSize].entry_year = (short int) ((decoded[1] & 0x07) << 4 | (decoded[2] & 0xF0) >> 4);
 
-            db->arr[*arrSize].created_day = (short int)  ((decoded[3] & 0xF8) >> 3);
-            db->arr[*arrSize].created_month = (short int)  ((decoded[3] & 0x07) << 1 | (decoded[3] & 0x80) >> 7);
-            db->arr[*arrSize].created_year = (short int)  decoded[4];
+            db->arr[*arrSize].created_day = (short int) ((decoded[3] & 0xF8) >> 3);
+            db->arr[*arrSize].created_month = (short int) ((decoded[3] & 0x07) << 1 | (decoded[3] & 0x80) >> 7);
+            db->arr[*arrSize].created_year = (short int) decoded[4];
             (*arrSize)++;
         }
         fclose(fp1);
@@ -93,11 +97,14 @@ ApartmentTable* load_apartment_table_from_file() {
 }
 
 void save_apartment_table_to_file(ApartmentTable *db) {
+    /*
+     * Saving table to file by well defined structure
+     */
     FILE *fp1 = NULL;
     fp1 = fopen((const char *) APARTMENT_FILE, "w");
     assert(fp1 != NULL);
 
-    for(int i=0;i < db->size; i++) {
+    for (int i = 0; i < db->size; i++) {
         int address_len = (int) strlen(db->arr[i].address);
         fwrite(&(db->arr[i].id), sizeof(short int), 1, fp1);
         fwrite(&address_len, sizeof(short int), 1, fp1);
@@ -123,6 +130,11 @@ void save_apartment_table_to_file(ApartmentTable *db) {
 }
 
 ApartmentTable sortTable(ApartmentTable db, BOOL desc) {
+    /*
+     * Sorting the @db by desc/asc order of price value
+     * returning a allocated new @db
+     * user need to free it memory after he finish to use this sorted table
+     */
     int i;
     ApartmentTable sortedDb;
     sortedDb.arr = malloc(sizeof(Apartment) * db.size);
@@ -138,10 +150,10 @@ ApartmentTable sortTable(ApartmentTable db, BOOL desc) {
         isSorted = TRUE;
         for (i = 0; i < sortedDb.size - 1; i++) {
             if (desc == TRUE && sortedDb.arr[i].price < sortedDb.arr[i + 1].price) {
-                swapApartment(&sortedDb.arr[i], &sortedDb.arr[i+1]);
+                swapApartment(&sortedDb.arr[i], &sortedDb.arr[i + 1]);
                 isSorted = FALSE;
             } else if (desc == FALSE && sortedDb.arr[i].price > sortedDb.arr[i + 1].price) {
-                swapApartment(&sortedDb.arr[i], &sortedDb.arr[i+1]);
+                swapApartment(&sortedDb.arr[i], &sortedDb.arr[i + 1]);
                 isSorted = FALSE;
             }
         }
