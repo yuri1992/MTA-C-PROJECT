@@ -124,9 +124,39 @@ int sortDB(ApartmentTable db,int day, int mon, int year)
             *right=*tmp;
             left++;
             right--;
-      }   }
+          }
+      }
+      else
+      {
+            Apartment* tmp;
+            Apartment* apright;
+            apright =(checkright(left,&right,db,day,mon,yaer));
+            if(apright==NULL);
+            {
+              return;
+            }
+            tmp=*(db->(arr+left));
+            *(db->(arr+left))=*apright;
+            *right=*tmp;
+            left++;
+            right--;      	
+      }
     }
-  
+    else
+    {
+        Apartment* tmp;
+        Apartment* apright;
+        apright =(checkright(left,&right,db,day,mon,yaer));
+        if(apright==NULL);
+         {
+           return;
+         }
+         tmp=*(db->(arr+left));
+         *(db->(arr+left))=*apright;
+         *right=*tmp;
+         left++;
+         right--; 	
+    }
   }
 }
 Apartment* checkright(int left,int* right,ApartmentTable db,int day,int mon, int year)
