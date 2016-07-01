@@ -8,11 +8,11 @@
 void delete_apt(COMMAND cmd, ApartmentTable db) 
 {
   int daystoremove;
+  int mid;
   int sizeDB;
   int i;
   int day,mon,year;
   sscanf(cmd,"%s %*s %d",&daystoremove);
-
   struct tm * timeinfo;
   timeinfo = datelessdays(daystoremove);
   year=timeinfo.tm_year;
@@ -20,30 +20,9 @@ void delete_apt(COMMAND cmd, ApartmentTable db)
   day=timeinfo.tm_mday;
   sortDB(db,day,mon,year);
   sizeDB=db.size;
-  for (i=0;i<sizeDB;i++)
-  {
-    if (db->(arr+i).created_year>yearRmv)
-    {
-      db->(arr+i)=db->arr+sizeDB;
-      --sizeDB;
-    }
-    else if (db->(arr+i).created_year==yearRmv)
-    {
-      if(db->(arr+i).created_month<monthRmv)
-      {
-        db->(arr+i)=db->arr+sizeDB;
-        --sizeDB;
-      }
-      else if (db->(arr+i).created_month==monthRmv)
-      {
-        if(db->(arr+i).created_day>dayRmv)
-        {
-          db->(arr+i)=db->arr+sizeDB;
-          --sizeDB; 
-        }
-      }
-    }
-  }
+  mid=sizeDB/2;
+  
+}
   struct tm * datelessdays(int days)
 {
 	time_t rawtime;
@@ -72,7 +51,7 @@ void delete_apt(COMMAND cmd, ApartmentTable db)
 struct tm * datelessdays(int days)
 {
 	time_t rawtime;
-    struct tm * timeinfo;
+    	struct tm * timeinfo;
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
 	int diff=timeinfo->tm_yday-days;
