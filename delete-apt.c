@@ -13,7 +13,9 @@ void delete_apt(COMMAND cmd, ApartmentTable db)
 	int sizeDB;
 	int i;
 	int day, mon, year;
-	sscanf(cmd.kwargs->arr->value, "%s, %*s %d", &daystoremove);
+	char *ptr;
+	ptr = cmd.kwargs->arr->value;
+	sscanf(ptr, "%s %*s %d", &daystoremove);
 	struct tm * timeinfo;
 	timeinfo = datelessdays(daystoremove);
 	year = timeinfo->tm_year;
