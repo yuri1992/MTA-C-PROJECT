@@ -11,7 +11,9 @@ void buy_apt(COMMAND cmd, ApartmentTable db)
 	int i;
 	int size;
 	Apartment tmp;
-	sscanf(cmd.kwargs->arr->value, "%s, %*s %d", &idnumber);
+	ListNode *ptr;
+	ptr = cmd.args->head;
+	idnumber = ptr->data;
 	size = db.size;
 	for (i = 0; i<size; i++)
 	{
