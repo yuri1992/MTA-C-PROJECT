@@ -4,6 +4,8 @@
 #include<stdio.h>
 #include<time.h>
 #include "delete-apt.h"
+#include "lineinteperter.h"
+
 
 void delete_apt(COMMAND cmd, ApartmentTable db) 
 {
