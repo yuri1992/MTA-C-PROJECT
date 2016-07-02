@@ -8,7 +8,6 @@
 void delete_apt(COMMAND cmd, ApartmentTable db) 
 {
   int daystoremove;
-  int mid;
   int sizeDB;
   int i;
   int day,mon,year;
@@ -19,9 +18,8 @@ void delete_apt(COMMAND cmd, ApartmentTable db)
   mon=timeinfo.tm_mon;
   day=timeinfo.tm_mday;
   sortDB(db,day,mon,year);
-  sizeDB=db.size;
   mid=sizeDB/2;
-  
+  deleteDBdays(&db,day,mon,year);
 }
   struct tm * datelessdays(int days)
 {
@@ -138,6 +136,28 @@ int sortDB(ApartmentTable db,int day, int mon, int year)
     }
   }
 }
+void   deleteDBdays(ApartmentTable *db,int day,int mon,int year)
+{
+	int sum;
+	int size;
+	int i;
+	i=0;
+	size=*(db.size);
+	sum=sumdate(day,mon,year);
+	while(i<size)
+	{
+		if (sumdate(*(db->(arr+i).created_day)*(db->(arr+i).created_month)*(db->(arr+i).created_year)<sum)
+		{
+			i++;
+		}
+		else
+		{
+			*(db.size)=i;
+			return;
+		}
+		
+	}
+}
 Apartment* checkright(int left,int* right,ApartmentTable db,int day,int mon, int year)
 {
   while((*right>left)||(*right==left))
@@ -157,4 +177,8 @@ Apartment* checkright(int left,int* right,ApartmentTable db,int day,int mon, int
     }
   }
   return NULL;
+}
+int sumdate(int day,int mon,int year)
+{
+	return(day+(mon*30)+(year*365))
 }
