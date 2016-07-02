@@ -10,7 +10,6 @@
 void delete_apt(COMMAND cmd, ApartmentTable db)
 {
 	int daystoremove;
-	int sizeDB;
 	int i;
 	int day, mon, year;
 	char *ptr;
@@ -48,30 +47,6 @@ struct tm * datelessdays(int days)
 	return timeinfo;
 }
 
-
-struct tm * datelessdays(int days)
-{
-	time_t rawtime;
-	struct tm * timeinfo;
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	int diff = timeinfo->tm_yday - days;
-	if (diff >= 0)
-	{
-		timeinfo->tm_yday = diff;
-		timeinfo->tm_mday = diff % 30;
-		timeinfo->tm_mon = diff / 6;
-	}
-
-	while (diff<0)
-	{
-		timeinfo->tm_year = timeinfo->tm_year - 1;
-		timeinfo->tm_yday = diff + 365;
-	}
-	timeinfo->tm_mday = timeinfo->tm_yday % 30;
-	timeinfo->tm_mon = timeinfo->tm_yday / 6;
-	return timeinfo;
-}
 
 void sortDB(ApartmentTable db, int day, int mon, int year)
 {
