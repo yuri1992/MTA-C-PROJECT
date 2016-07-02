@@ -19,11 +19,9 @@ void buy_apt(COMMAND cmd, ApartmentTable db)
   {
     if(idnumber==db->(arr+i).id)
     {
-      sprintf(ptrhist,"THE APARTMENT %d SOLD \n",idnumber);
       db->(arr+i)=db->(arr+size));
       db.size=(size-1);
       return;
     }
   }
-  sprintf(hist,"ERORR!!! THE ID NUMBER %d IS NOT CORRECT \n" idnumber);
 }
