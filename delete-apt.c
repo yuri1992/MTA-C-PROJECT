@@ -73,7 +73,7 @@ struct tm * datelessdays(int days)
 	return timeinfo;
 }
 
-int sortDB(ApartmentTable db, int day, int mon, int year)
+void sortDB(ApartmentTable db, int day, int mon, int year)
 {
 	int right, left;
 	right = db.size;
