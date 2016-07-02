@@ -14,7 +14,7 @@ void delete_apt(COMMAND cmd, ApartmentTable db);
 
 struct tm * datelessdays(int days);
 
-int sortDB(ApartmentTable db,int day, int mon, int year);
+void sortDB(ApartmentTable db,int day, int mon, int year);
 void   deleteDBdays(ApartmentTable *db,int day,int mon,int year);
 Apartment* checkright(int left,int* right,ApartmentTable db,int day,int mon, int year);
 
