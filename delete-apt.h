@@ -10,13 +10,8 @@
 #ifndef MTA_C_PROJECT_DELETE_APT_H
 #define MTA_C_PROJECT_DELETE_APT_H
 
-void delete_apt(COMMAND cmd, ApartmentTable db);
-
-struct tm * datelessdays(int days);
-
-void sortDB(ApartmentTable db,int day, int mon, int year);
-void   deleteDBdays(ApartmentTable *db,int day,int mon,int year);
-Apartment* checkright(int left,int* right,ApartmentTable db,int day,int mon, int year);
-
-int sumdate(int day,int mon,int year);
+#include<stdio.h>
+#include<time.h>
+#include <stdlib.h>
+void delete_apt(COMMAND cmd, ApartmentTable *db);
 #endif //MTA_C_PROJECT_DELETE_APT_H
