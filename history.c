@@ -19,6 +19,7 @@ void append_last_search(History *hist, char *str) {
     if (hist->short_term_history[N - 1] != NULL) {
         tmp = strdup(hist->short_term_history[N - 1]);
     }
+
     for (int i = N - 1; i >= 1; i--) {
         if (hist->short_term_history[i - 1] != NULL) {
             free(hist->short_term_history[i]);
@@ -31,24 +32,23 @@ void append_last_search(History *hist, char *str) {
     strcpy(hist->short_term_history[0], str);
 
     if (tmp != NULL) {
-        int new_size = hist->size_long_history + 1;
-
-        if (hist->size_long_history == 0) {
-            hist->long_term_history = malloc(sizeof(char *) * new_size);
-        } else {
-            hist->long_term_history = realloc(hist->long_term_history, sizeof(char *) * new_size);
+        if (hist->size_long_history == hist->allocated_size) {
+            hist->allocated_size *= 2;
+            hist->long_term_history = realloc(hist->long_term_history, sizeof(char*) * hist->allocated_size);
         }
-        hist->size_long_history = new_size;
 
-        hist->long_term_history[new_size - 1] = malloc(sizeof(char) * strlen(tmp) + 1);
-        strcpy(hist->long_term_history[new_size - 1], tmp);
+        int new_size = hist->size_long_history;
+        hist->long_term_history[new_size] = malloc(sizeof(char) * (strlen(tmp) + 1));
+
+        strcpy(hist->long_term_history[new_size], tmp);
+        hist->size_long_history++;
         free(tmp);
     }
 }
 
 void short_history(History hist) {
     /*
-     * short_history - printing all commands in short hitory array
+     * short_history - printing all commands in short hisory array
      */
     for (int i = N - 1; i >= 0; i--) {
         if (hist.short_term_history[i] != NULL)
@@ -91,7 +91,8 @@ void load_from_history_file(History *hist) {
     for (int i = 0; i < N; i++) {
         hist->short_term_history[i] = NULL;
     }
-    hist->long_term_history = malloc(sizeof(char*));
+    hist->long_term_history = malloc(sizeof(char*) * INITIAL_ALLOCATED_SIZE_LONG);
+    hist->allocated_size = INITIAL_ALLOCATED_SIZE_LONG;
     hist->size_long_history = 0;
 
     if (fp1 != NULL) {
@@ -104,10 +105,12 @@ void load_from_history_file(History *hist) {
                 hist->short_term_history[i] = malloc(sizeof(char) * string_size);
                 strcpy(hist->short_term_history[i], line);
             } else {
-                if (hist->size_long_history == i - N) {
-                    hist->size_long_history++;
-                    hist->long_term_history = realloc(hist->long_term_history, sizeof(char*) * hist->size_long_history);
+                if (hist->size_long_history == hist->allocated_size) {
+                    hist->allocated_size *= 2;
+                    hist->long_term_history = realloc(hist->long_term_history, sizeof(char*) * hist->allocated_size);
                 }
+
+                hist->size_long_history++;
                 hist->long_term_history[i - N] = malloc(sizeof(char) * string_size);
                 strncpy(hist->long_term_history[i - N], line, (size_t) string_size);
             }

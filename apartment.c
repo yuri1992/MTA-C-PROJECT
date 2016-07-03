@@ -48,6 +48,7 @@ ApartmentTable *load_apartment_table_from_file() {
     db->arr = malloc(sizeof(Apartment *));
     db->size = 0;
     db->r_size = 0;
+    db->current_index = 0;
 
     FILE *fp1 = NULL;
     fp1 = fopen((const char *) APARTMENT_FILE, "r");
@@ -67,7 +68,7 @@ ApartmentTable *load_apartment_table_from_file() {
                 assert(db->arr != NULL);
             }
 
-
+            db->current_index = max(db->current_index, code);
             db->arr[*arrSize].id = code;
             // Reading the address and address len
             fread(&address_len, sizeof(short int), 1, fp1);
@@ -92,7 +93,7 @@ ApartmentTable *load_apartment_table_from_file() {
         }
         fclose(fp1);
     }
-
+    db->current_index++;
     return db;
 }
 

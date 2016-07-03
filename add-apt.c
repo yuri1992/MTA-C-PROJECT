@@ -23,7 +23,7 @@ void add_apt(COMMAND cmd, ApartmentTable *db) {
     }
 
     ListNode *ptr = cmd.args->head;
-    db->arr[nSize].id = nSize + 1;
+    db->arr[nSize].id = db->current_index++;
 
     // First Argument is Address
     db->arr[nSize].address = strdup(ptr->data);

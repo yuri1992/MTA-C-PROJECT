@@ -30,6 +30,7 @@ typedef unsigned char BYTE;
 typedef struct apartment_db {
     int size;
     int r_size;
+    int current_index;
     Apartment *arr;
 } ApartmentTable;
 

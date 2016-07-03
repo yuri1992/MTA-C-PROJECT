@@ -4,6 +4,7 @@
 #include "find-apt.h"
 #include "add-apt.h"
 #include "buy-apt.h"
+#include "delete-apt.h"
 
 void start(ApartmentTable *db, History *hist) {
     /*
@@ -86,6 +87,7 @@ void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
         buy_apt(*currCommand, db);
     } else if (strcmp(currCommand->command, "delete-apt") == 0) {
         append_last_search(hist, currCommand->raw_command);
+        delete_apt(*currCommand, db);
     } else if (strcmp(currCommand->command, "add-apt") == 0) {
         append_last_search(hist, currCommand->raw_command);
         add_apt(*currCommand, db);

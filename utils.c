@@ -97,3 +97,9 @@ char *splitFirst(const char *str, char needle) {
     strOut[strEnd - str] = '\0';
     return trim(strOut);
 }
+
+int max(int num1, int num2) {
+    if (num1 > num2)
+        return num1;
+    return num2;
+}

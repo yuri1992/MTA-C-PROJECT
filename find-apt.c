@@ -74,7 +74,7 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
             endDate.tm_hour = 23;
             endDate.tm_min = 59;
             endDate.tm_sec = 59;
-            endDate.tm_year = atoi(substring(date, 5 , 2)) + 100;
+            endDate.tm_year = atoi(substring(date, 5 , 4)) - 1900;
             endDate.tm_mon = atoi(substring(date, 3 , 2)) - 1;
             endDate.tm_mday = atoi(substring(date, 1 , 2));
 
@@ -96,6 +96,6 @@ void find_apt(COMMAND cmd, ApartmentTable db) {
 
     if (isAllocated == TRUE) {
         // free the memory that allocated if the array is sorted
-        free(ptr.arr);
+        //free(ptr.arr);
     }
 }

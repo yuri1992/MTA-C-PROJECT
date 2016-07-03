@@ -6,12 +6,14 @@
 #define MTA_C_PROJECT_HISTORY_H
 
 #define N 7
+#define INITIAL_ALLOCATED_SIZE_LONG 7
 #define HISTORY_FILE "history.txt"
 
 typedef struct history {
     char* short_term_history[N];
     char** long_term_history;
     int size_long_history;
+    int allocated_size;
 } History;
 
 void append_last_search(History* hist, char*str);
