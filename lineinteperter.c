@@ -3,6 +3,7 @@
 #include "lineinteperter.h"
 #include "find-apt.h"
 #include "add-apt.h"
+#include "buy-apt.h"
 
 void start(ApartmentTable *db, History *hist) {
     /*
@@ -82,6 +83,7 @@ void routerHandler(COMMAND *currCommand, ApartmentTable *db, History *hist) {
         find_apt(*currCommand, *db);
     } else if (strcmp(currCommand->command, "buy-apt") == 0) {
         append_last_search(hist, currCommand->raw_command);
+        buy_apt(*currCommand, db);
     } else if (strcmp(currCommand->command, "delete-apt") == 0) {
         append_last_search(hist, currCommand->raw_command);
     } else if (strcmp(currCommand->command, "add-apt") == 0) {
